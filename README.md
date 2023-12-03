@@ -6,12 +6,14 @@
 This project consits in a drone operation interactive simulator.  
 The drone is driven by the user and moves in an empty arena through the user's keyboard commands. 
 
+Warning: After the window opens return to the terminal (press it) because, if not, the prgram will not take into account the keyboard iput
+
 ## Description
 
 This is the first project for the assignment of Advance Robotic Programming course of Robotics Engeneerig Master degree in Università degli studi di Genova.  
 It consists in a 2Dimensional drone movement simulator with the goal to consider all the forces that act on the rigid body during the motion in the real world, such as the friction force.  
 This simulation environment implents sevreal different processes to manage all the possible application or complication that can happen during a drone flight. 
-All the  processes exchange data through shared memeory or pipes between them and all of them are chldren of the master process.  There are also two process that impements a friendly user interface.  
+All the  processes exchange data through shared memeory or pipes between them and all of them are chldren of the master process. 
 
 ## Repository Architecture
 
@@ -27,24 +29,39 @@ This github package contains **drone_sim** folder that is the main folder. Insid
 
 This program is composed by several different process:
 * master: the main process and the father of all the other process. It `fork()` to generate the new child process and through an `exevp()` it overwrites the child with a new computation.
-* [description:](https://github.com/leleviola/arp/blob/master/drone_sim/description.c) Introductivewindow to show all the commnd to use for the input to the user.
+* It sends all the id-process to the watchdog
+* [description:](https://github.com/leleviola/arp/blob/master/drone_sim/description.c) Introductive window to show all the command to use to the input to the user.
 * [server:](https://github.com/leleviola/arp/blob/master/drone_sim/server.c) the blackboard  of the project, implemented through a shared memory with the drone that compute all the user's inputs
 * * [window:](https://github.com/leleviola/arp/blob/master/drone_sim/window.c) window that show the geometrical position of the drone in the arena and the position's numeeric values.
 * [drone:](https://github.com/leleviola/arp/blob/master/drone_sim/drone.c) the computation side of the project, it takes the input, process it with the optimal exstimation of the drone position in the real world and share the data with the server.
-* [input:](https://github.com/leleviola/arp/blob/master/drone_sim/input.c)  Takes the user's char input. It is important to notice that the user graphic interface is a child of the input. That's needed to have a $modular$ project. In the future it will be easier (if needed) to cange the graphic interface without changing any main process of the package.
-* * [inputc:](https://github.com/leleviola/arp/blob/master/drone_sim/inputcou.c) the user graphic interface to take to user's inut only from the keyboard and only from the showed keys.
+* [input:](https://github.com/leleviola/arp/blob/master/drone_sim/input.c)  Takes the user's char input. It is important to alows the user to give the data input
 * [watchdog:](https://github.com/leleviola/arp/blob/master/drone_sim/wd.c)  the process controller. Through the signal and the signal handler functions of the process it checks if all the process are still alive. If not, it ends the program.
-  
-AGGIUNGI FOTO FATTA BENE
 
+Achitecture/image is still charging...
+  
 ## Main features
 The program starts with an introduction page to show all the commands to the user, and all the other processes initialize only when the description child of the master process has terminated through a `wait(NULL);`.  
-It is important to remeber that tuìhe user iterface are conneced to the parent process through unnamed pipes.
+It is important to remeber that the user iterface are connected to the parent process through unnamed pipes.
+This several process are important to build a modular project and gives different tasks to the different pojects, as explained in the previouse chapter.
+The balckboard receives information hrough the shared memory, but the axcess to the data is reguled and controlled by a semaphore.
+
+The drone compute the position information with the second Newton Law considering as the sum of all the forces the value taken by the input, subtracting the friction forces and calculating the acceleration.  
+So, with this parametr, apllyng th Kinematics law for a rigid body, it computes the position of the robot in the arena.
+This position is given to the window process that draw the drone's position in the space
+
 
 ---------------
 ## Installation  
 
-AGGIUNGI TUTTA ROBA DA INSTALLARE konsole etc e link a file che descrive comeinstallare
+To run this projec is necessary to have installed on the computer this software:
+* Konsole: application emulating KDE terminals, to run it copy that on the shell:
+  ```bash
+  $ sudo apt install konsole
+  ```
+  * NCurses: C software library enabling the creation of graphical user interfaces. To install it:
+   ```bash
+  $ sudo apt install libncurses-dev
+  ``` 
 
 To **run** this code you have to follow a few of steps:
 * clone the repository
@@ -55,13 +72,18 @@ To **run** this code you have to follow a few of steps:
   ```bash
   $ cd drone_sim/
   ```
+* give the permession to te compiler
+ ```bash
+  $ chmod +x compile.sh
+  ```
 * execute and run the code:
   ```bash
   $ ./compile.sh
   ```
   
 ## Usage
-/*Spiega come utilizzare il progetto una volta installato. Fornisci esempi pratici, comandi da eseguire o istruzioni dettagliate su come sfruttare le funzionalità principali del progetto. Puoi includere anche esempi di codice, screenshot o diagrammi che illustrano l'utilizzo pratico del progetto.*/
+
+This project can be used to simulate the opeation of a drone only changing the values with the specific weight and strenght generated by the propellers in a planar motion. For now it is not yet a fully reliable simulator as it does not take into account many variables that may change over time(such as the wind or other external variables, but step by step, with new updates it will become increasingly reliable for the design of new drones
 
 ----------------
 ## Contributions
@@ -90,4 +112,4 @@ You can contact the project leaders throught their GitHub pages.
 
 For the Konsoles implementations it is mportant to know the ncurses libraries. [Here](METTI LINK) a web tutorial
 
-DENTRO ALTRO README (SOLO SE VOGLIAMO) CHE SPEGA I VARI PROCESI LATO IMPLEMNTAZIONE
+
