@@ -65,7 +65,6 @@ In this video is showed the difference between the key D (the case in which the 
 
 ![emerency stop](https://github.com/leleviola/arp/blob/resources/resources/togli_acc_vs_frenata.gif)
 
-<img src="https://github.com/leleviola/arp/blob/resources/resources/Schermata%20del%202023-12-03%2017-59-07.png" alt="Description Image" width="400" height="400" align="Center" />
 
 
 ---------------
