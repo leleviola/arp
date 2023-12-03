@@ -14,6 +14,9 @@ This is the first project for the assignment of Advance Robotic Programming cour
 It consists in a 2Dimensional drone movement simulator with the goal to consider all the forces that act on the rigid body during the motion in the real world, such as the friction force.  
 This simulation environment implents sevreal different processes to manage all the possible application or complication that can happen during a drone flight. 
 All the  processes exchange data through shared memeory or pipes between them and all of them are chldren of the master process. 
+An exemple is the emergency stop simulation:  
+
+![emerency stop](https://github.com/leleviola/arp/blob/resources/resources/togli_acc_vs_frenata.gif)
 
 ## Repository Architecture
 
@@ -47,7 +50,9 @@ The balckboard receives information hrough the shared memory, but the axcess to 
 
 The drone compute the position information with the second Newton Law considering as the sum of all the forces the value taken by the input, subtracting the friction forces and calculating the acceleration.  
 So, with this parametr, apllyng th Kinematics law for a rigid body, it computes the position of the robot in the arena.
-This position is given to the window process that draw the drone's position in the space
+This position is given to the window process that draw the drone's position in the space.  
+
+<img src="https://github.com/leleviola/arp/blob/resources/resources/Schermata%20del%202023-12-03%2017-59-07.png" alt="Description Image" width="200" height="200" />
 
 
 ---------------
