@@ -53,7 +53,7 @@ The drone compute the position information with the second Newton Law considerin
 So, with this parametr, aplliyng th Kinematics law for a rigid body, it computes the position of the robot in the arena.
 This position is given to the window process that draw the drone's position in the space.  
 
-<img src="https://github.com/leleviola/arp/blob/resources/resources/Schermata%20del%202023-12-03%2017-59-07.png" alt="Description Image" width="200" height="200" />
+<img src="https://github.com/leleviola/arp/blob/resources/resources/Schermata%20del%202023-12-03%2017-59-07.png" alt="Description Image" width="400" height="400" align="Center" />
 
 
 ---------------
