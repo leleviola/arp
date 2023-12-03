@@ -1,17 +1,17 @@
-## ADVACNCE ROBOT PROGRAMMING
+## ADVANCED AND ROBOT PROGRAMMING
 ----------------------------
 
-# DRONE OPERATIONE INTERACTIVE SIMULATOR
+# DRONE OPERATION INTERACTIVE SIMULATOR
 
 This project consits in a drone operation interactive simulator.  
 The drone is driven by the user and moves in an empty arena through the user's keyboard commands. 
 
-Warning: After the window opens return to the terminal (press it) because, if not, the program will not take into account the keyboard iput
+!!!! Warning: After the window opens return to the terminal (press it) because, if not, the program will not take into account the keyboard iput !!!!
 
 ## Description
 
-This is the first project for the assignment of Advance Robotic Programming course of Robotics Engeneerig Master degree in Università degli studi di Genova.  
-It consists in a 2Dimensional drone motion simulator with the goal to consider all the forces that act on the rigid body during the motion in the real world, such as the friction force.  
+This is the first project for the assignment of Advanced and Robot Programming course of Robotics Engeneerig Master degree in Università degli studi di Genova.  
+It consists in a 2Dimensional drone motion simulator with the goal of considering all the forces that act on the rigid body during the motion in the real world, such as the friction force.  
 This simulation environment implents several different processes to manage all the possible application or complication that can happen during a drone flight. 
 All the processes exchange data through shared memeory or pipes between them and all of them are chldren of the master process.   
 
@@ -22,8 +22,6 @@ An exemple of implementation is the emergency stop simulation:
 ## Repository Architecture
 
 This github package contains **drone_sim** folder that is the main folder. Insided that there are:  
-* build: Contains the CMake file and the file list
-* library: Contains all the libraies created by the developers for the progrms implementation 
 * logfiles: contains all the file opened during the software implementation to check the application state
 * All processes.c
 
