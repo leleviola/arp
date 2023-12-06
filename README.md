@@ -35,7 +35,7 @@ This program is composed by several different process:
 * [input:](https://github.com/leleviola/arp/blob/master/drone_sim/input.c)  Takes the user's char input. It is important to allows the user to give the data input
 * [watchdog:](https://github.com/leleviola/arp/blob/master/drone_sim/wd.c)  the process controller. Through the signal and the signal handler functions of the process it checks if all the process are still alive. If not, it ends the program.
   
-![Project Architecture](https://github.com/leleviola/arp/blob/resources/resources/1701898460755.jpg)
+![Project Architecture](https://github.com/leleviola/arp/blob/resources/resources/Ass1Architecture.png)
   
 ## Main features
 The program starts with an introduction page to show all the commands to the user, and all the other processes initialize only when the description child of the master process has terminated through a `wait(NULL);`.  
