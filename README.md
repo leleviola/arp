@@ -40,15 +40,14 @@ This program is composed by several different process:
 * [window:](https://github.com/leleviola/arp/blob/master/drone_sim/window.c) window that show the geometrical position of the drone in the arena and the position's numeeric values.
 * [drone:](https://github.com/leleviola/arp/blob/master/drone_sim/drone.c) the computation side of the project, it takes the input, process it with the optimal exstimation of the drone position in the real world and share the data with the server.
 * [input:](https://github.com/leleviola/arp/blob/master/drone_sim/input.c)  Takes the user's char input. It is important to allows the user to give the data input
-* [obstacles:]() the obstacles process. It generates, every 60 seconds, a random number of obstacles that will be inside the environment. Every obstacle generates a repulsive force everytime the drone will be near enough
-* [targets:]() the targets process. It generates, every 60 seconds, a random number of targets that will be inside the environment. Every target generates an attractive force on the drone
+* [obstacles:](https://github.com/leleviola/arp/blob/master/drone_sim/obstacles.c) the obstacles process. It generates, every 60 seconds, a random number of obstacles that will be inside the environment. Every obstacle generates a repulsive force everytime the drone will be near enough
+* [targets:](https://github.com/leleviola/arp/blob/master/drone_sim/targets.c) the targets process. It generates, every 60 seconds, a random number of targets that will be inside the environment. Every target generates an attractive force on the drone
 * [watchdog:](https://github.com/leleviola/arp/blob/master/drone_sim/wd.c)  the process controller. Through the signal and the signal handler functions of the process it checks if all the process are still alive. If not, it ends the program.
   
-![Project Architecture](https://github.com/leleviola/arp/blob/resources/resources/Ass1Architecture.png)
+![Project Architecture]((https://github.com/leleviola/arp/blob/resources/resources/architettura2.png))
   
 ## Main features
 The program starts with an introduction page to show all the commands to the user, and all the other processes initialize only when the description child of the master process has terminated through a `wait(NULL);`.  
-![introduction image]()
 It is important to remeber that the user iterface are connected to the parent process through unnamed pipes.
 This several process are important to build a modular project and gives different tasks to the different pojects, as explained in the previouse chapter.
 All processes manage the reading of the requested information sent in writing by the other processes. The server is the main information management node, receiving the obstacles, targets and position of the drone. It is only through the use of **select** and type identification codes that the server is able to read what is being read to the other nodes.
@@ -57,13 +56,9 @@ All processes manage the reading of the requested information sent in writing by
 ### Description
 KEYS INSTRUCTIONS:
 
-----------------    -----
 |Q | W | E | R |... | U |
---- --- --- ----    -----
    | S | D | F |
-   ---- --- --- ----
    | X | C | V | B |
-   ---- --- --- ----
 
 E: MOVE UP
 C: MOVE DOWN 
@@ -83,7 +78,7 @@ The drone compute the position information with the second Newton Law considerin
 So, with this parametr, aplliyng the Kinematics law for a rigid body, it computes the position of the robot in the arena. This position is given to the window process that draw the drone's position in the space.  
 
 In this video is showed an exemple of drone movement in the environment
-![movimento del drone]()
+![movimento del drone](https://github.com/leleviola/arp/blob/resources/resources/Video-del-15-01-2024-23_29_18.gif)
 
 ## Strong points
 The points of strength of this simulator are:
