@@ -44,7 +44,7 @@ This program is composed by several different process:
 * [targets:](https://github.com/leleviola/arp/blob/master/drone_sim/targets.c) the targets process. It generates, every 60 seconds, a random number of targets that will be inside the environment. Every target generates an attractive force on the drone
 * [watchdog:](https://github.com/leleviola/arp/blob/master/drone_sim/wd.c)  the process controller. Through the signal and the signal handler functions of the process it checks if all the process are still alive. If not, it ends the program.
   
-![Project Architecture]((https://github.com/leleviola/arp/blob/resources/resources/architettura2.png))
+![Project Architecture](https://github.com/leleviola/arp/blob/resources/resources/architettura2.png)
   
 ## Main features
 The program starts with an introduction page to show all the commands to the user, and all the other processes initialize only when the description child of the master process has terminated through a `wait(NULL);`.  
@@ -57,7 +57,9 @@ All processes manage the reading of the requested information sent in writing by
 KEYS INSTRUCTIONS:
 
 |Q | W | E | R |... | U |
+
    | S | D | F |
+   
    | X | C | V | B |
 
 E: MOVE UP
