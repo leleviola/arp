@@ -55,24 +55,38 @@ All processes manage the reading of the requested information sent in writing by
 ## Important topic to know before to use the simulator
 ### Description
 KEYS INSTRUCTIONS:
-
+```
+-------------------------
 |Q | W | E | R |... | U |
-
+-------------------------
    | S | D | F |
-   
+   -----------------
    | X | C | V | B |
+   -----------------
+```
 
-E: MOVE UP
-C: MOVE DOWN 
+E: MOVE UP 
+
+C: MOVE DOWN   
+
 S: MOVE LEFT 
+
 F: MOVE RIGHT 
+
 R: MOVE UP-RIGHT   
+
 W: MOVE UP-LEFT
+
 V: MOVE DOWN-RIGHT
+
 X: MOVE DOWN-LEFT 
+
 D: REMOVE ALL FORCES -> goes on by inertia
+
 B: BRAKE -> generates force opposite to the velocity
+
 U: RESET THE DRONE -> set the drone position to the starting values, and resets force amd velocity
+
 Q: QUIT THE GAME -> terminate the program
 
 ### Drone dynamics
