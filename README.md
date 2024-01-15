@@ -91,8 +91,7 @@ Q: QUIT THE GAME -> terminate the program
 
 ### Drone dynamics
 The drone compute the position information with the second Newton Law considering as the sum of all the forces the value taken by the input, subtracting the friction forces and calculating the acceleration.  
-So, with this parametr, aplliyng the Kinematics law for a rigid body, it computes the position of the robot in the arena. This position is given to the window process that draw the drone's position in the space.  
-So, with this parametr, appliyng the Kinematics law for a rigid body, it computes the position of the robot in the arena. This position is given to the window process that draw the drone's position in the space.  
+So, with this parameter, appliyng the Kinematics law for a rigid body, it computes the position of the robot in the arena. This position is given to the window process that draw the drone's position in the space.  
 We need to specify that, even if the velocity is different from zero, if its module isn't > 5, the drone will not move. This is due to the fact that coordinates must be integer, while velocity and the other variables are floats (so it is because of an approximation). 
 When the drone is close to obstacle, they apply to it a repulsive force, modeled following the Lathombe-Kathib model. This for each obstacle in the window, including the edges, that are considered as obstacles. When the drone exits from the window (due to bug or other causes) it respawn automatically to the spawn point, which is set exatly at the centre of the window.
 For better reaching target, a small attractive force has been setted, which is active when the drone is close to it.
@@ -171,5 +170,5 @@ For the Konsoles implementations it is mportant to know the ncurses libraries. [
 - After the window opens return to the terminal (press it) because, if not, the program will not take into account the keyboard iput.
 - Rarely may happen that the drone escapes to the edges -> In this case it will be reset to the centre of the window
 
-**problems:** It is well known that sometimes the window can close unexpectedly. We are still working on this problem to find a solution and solve it in the next update. Unfortunately, the ncurses graphics library does not help in the development of the graphical user interface. The only solution is to re-run the programme from the terminal with: `./compile.sh`
-If the terminal no longer responds to keyboard input, please close the terminal and open a new one
+**problems:** It is well known that really rarely the window can close unexpectedly. We are still working on this problem to find a solution and solve it in the next update. Unfortunately, the ncurses graphics library does not help in the development of the graphical user interface. The only solution is to re-run the programme from the terminal with: `./compile.sh`
+If the terminal no longer responds to keyboard input, please close the terminal and open a new one.
