@@ -317,7 +317,7 @@ int main(char argc, char*argv[]){
                     writeToLog(errors, "WINDOW: error in read drone from Server");
                     exit(EXIT_FAILURE);
                 }
-                writeToLog(winfile, "WINDOW: reading drone");
+                // writeToLog(winfile, "WINDOW: reading drone");
             }  
         }
 		x = drone->x;
@@ -329,11 +329,9 @@ int main(char argc, char*argv[]){
 
         wclear(win);
         borderCreation(&winpar, win);
-        writeToLog(winfile, "WINDOW: border created");
         wattron(win, COLOR_PAIR(5) | A_BOLD);
 		mvwprintw(win, y, x, "%c", symbol);
         wattroff(win, COLOR_PAIR(5) | A_BOLD);
-        writeToLog(winfile, "WINDOW: drone printed");
 
         // printing obstacles
         if (nobstacles != 0) {
@@ -342,7 +340,6 @@ int main(char argc, char*argv[]){
                 mvwprintw(win, obs[i]->y, obs[i]->x, "%c", obs_symbol);
                 wattroff(win, COLOR_PAIR(3) | A_BOLD);
             }
-            writeToLog(winfile, "WINDOW: obstacles printed");
         }
         
         // printing targets
@@ -357,20 +354,15 @@ int main(char argc, char*argv[]){
                     
                 
                 if(tar[i]->taken == false){
-                    sprintf(msg, "WINDOW:I see a target %d: x = %d, y = %d", i, tar[i]->x, tar[i]->y);
-                    writeToLog(winfile, msg);
                     wattron(win, COLOR_PAIR(4) | A_BOLD);
                     mvwprintw(win, tar[i]->y, tar[i]->x, "%c", tar_symbol);
                     wattroff(win, COLOR_PAIR(4) | A_BOLD);
                 }
-                //tar[i]->taken = false;
-                writeToLog(winfile, "WINDOW: targets printed");
             }
         }
         wattron(win, COLOR_PAIR(2) | A_BOLD);
         mvwprintw(win, 0, 5, "X: %d, Y: %d, Vx: %f m/s, Vy: %f m/s, Fx: %d N, Fy: %d N, Score: %d / %d", x, y, vx, vy, fx, fy, counter, countertot);
         wattroff(win, COLOR_PAIR(2) | A_BOLD);
-        writeToLog(winfile, "WINDOW: info printed");
         wrefresh(win);  // Print changes to the screen
     }
 

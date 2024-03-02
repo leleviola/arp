@@ -222,7 +222,6 @@ void sig_handler(int signo, siginfo_t *info, void *context) {
     }
 }
 
-// lock() per impedire che altri usino il log file -> unlock()
 int main(int argc, char* argv[]){
     FILE * debug = fopen("logfiles/debug.log", "a");
     FILE * errors = fopen("logfiles/errors.log", "a");
@@ -231,7 +230,6 @@ int main(int argc, char* argv[]){
     fd_set write_fds;
     FD_ZERO(&read_fds);
     //FD_ZERO(&write_fds);
-    
     int keyfd; //readable file descriptor for key pressed in input 
     sscanf(argv[1], "%d", &keyfd);
     char input;
@@ -243,7 +241,9 @@ int main(int argc, char* argv[]){
     int pipeSefd[2];
     bool is_on_drone[20] = {false}; // vector to check if the i-th obstacle is on the drone when generated
     char msg[100]; // message to write on debug file
-    
+    char *coo = "coo";
+    char start[] = "START";
+
     // FILE Opening
     if (debug == NULL || errors == NULL){
         perror("error in opening log files");
@@ -308,7 +308,7 @@ int main(int argc, char* argv[]){
     targets *target[20]; //targets
 
     // READS WINDOW DIMENSIONS
-    int rows, cols;
+    int rows = 0, cols = 0;
     if ((read(pipeSefd[0], &rows, sizeof(int))) == -1){
         perror("error in reading from pipe");
         writeToLog(errors, "DRONE: error in reading from pipe rows");
@@ -357,6 +357,12 @@ int main(int argc, char* argv[]){
         edges[i+2*rows+cols]->x = i;
         edges[i+2*rows+cols]->y = 0;
     }
+
+    do {
+        read(pipeSefd[0], msg, sizeof(msg));
+    }while(strcmp(msg, start) != 0);
+
+    writeToLog(drdebug,"DRONE: Starting the computation after socket connection");
     
     // MAIN LOOP
     while(!sigint_rec){
@@ -525,7 +531,8 @@ int main(int argc, char* argv[]){
                         F[i] = F[i] + FORCE_MODULE * vf[i];
                     break;
                 case 'q':
-                    exit(EXIT_SUCCESS);  // Exit the program
+                    writeToLog(debug, "DRONE: Exiting program...");
+                    exit(EXIT_SUCCESS);
                 case 'u':
                     //reset drone
                     x = x0;
@@ -558,7 +565,7 @@ int main(int argc, char* argv[]){
         }
         // compute attractive force of targets
         for(int i = 0; i<ntargets; i++){
-            if(target[i]->taken && (x, y, target[i]->x, target[i]->y)){
+            if(!(target[i]->taken) && isTargetTaken(x, y, target[i]->x, target[i]->y)){
                 target[i]->taken = true;
                 sprintf(msg,"target at %d %d", target[i]->x, target[i]-> y);
                 writeToLog(drdebug, msg);
@@ -576,13 +583,8 @@ int main(int argc, char* argv[]){
             frx += calculateRepulsiveForcex(x, y, edges[i]->x, edges[i]->y, vx-5);
             fry += calculateRepulsiveForcey(x, y, edges[i]->x, edges[i]->y, vy-5);
         }
-        //F[0]+=frx;
-        //F[1]+=fry;
-        //F[0]-=fax;
-        //F[1]-=fay;
         printf("frx: %d fry: %d\n", frx, fry);
         printf("fax: %d fay: %d\n", fax, fay);
-        //updatePosition(&x, &y, &vx, &vy, T, F[0], F[1]);
         updatePosition(&x, &y, &vx, &vy, T, F[0]+frx+fax, F[1]+ fry+fay);
 
         if (x<0 || x>cols || y<0 || y>rows){ // if the drone is out of bounds
@@ -612,7 +614,7 @@ int main(int argc, char* argv[]){
         drone->vy = vy;
         drone->fx = F[0];
         drone->fy = F[1];
-        
+
         if ((write(pipeSefd[1], drone, sizeof(Drone))) == -1){
             perror("error in writing to pipe");
             writeToLog(errors, "DRONE: error in writing to pipe x");

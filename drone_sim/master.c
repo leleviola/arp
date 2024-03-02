@@ -11,7 +11,7 @@
 #include <sys/file.h>
 
 #define NUMPROCESS 6
-#define NUMPIPE 7 //diventa 7
+#define NUMPIPE 4 
 #define SERVER 0
 #define DRONE 1
 #define INPUT 2
@@ -64,16 +64,19 @@ int main(int argc, char* argv[]){
     char piperd[NUMPIPE][10];    // string that contains the readable fd of pipe_fd
     char pipewr[NUMPIPE][10];
     int pipe_fd[NUMPIPE][2]; 
+    int portSe = 40000;
+    int portTO = 40000;
+    char portStrSe[10];
+    char portStrTO[10];
+    char ipAddress[20] = "130.251.240.178";
+    int nprc = 0;
 
     // CREATING PIPE
 /*
-    pipe 0: input -> drone  = indr
-    pipe 1: drone -> server = drse
-    pipe 2: server -> drone = sedr
-    pipe 3: server -> obstacles = seob
-    pipe 4: obstacles -> server = obse 
-    pipe 5: server -> targets = seta
-    pipe 6: targets -> server = tase
+    pipe 0: input -> drone  
+    pipe 1: drone -> server 
+    pipe 2: server -> drone 
+    pipe 3: master -> description
 */
     // generates all the pipes
     for (int i = 0; i < NUMPIPE; i++){
@@ -87,23 +90,24 @@ int main(int argc, char* argv[]){
         sprintf(piperd[i], "%d", pipe_fd[i][0]);
         sprintf(pipewr[i], "%d", pipe_fd[i][1]);
     }
+    sprintf(portStrSe, "%d", portSe);
+    sprintf(portStrTO, "%d", portTO);
 
 
     // processes path
-    char * server_path[] = {"./server", piperd[1], pipewr[2],pipewr[3],piperd[4],pipewr[5],piperd[6], NULL};
+    char * server_path[] = {"./server", piperd[1], pipewr[2],portStrSe, NULL};
     char * drone_path[] = {"./drone", piperd[0],pipewr[1],piperd[2], NULL};
     char * input_path[] = {"./input",pipewr[0], NULL};
-    char *obstacles_path[] = {"./obstacles",piperd[3], pipewr[4], NULL};
-    char *targets_path[] = {"./targets",piperd[5], pipewr[6], NULL};
-    
-    ///char * argdes_path[] = {"konsole", "-e","./description", NULL};
+    char * obstacles_path[] = {"./obstacles",portStrTO,ipAddress, NULL};
+    char * targets_path[] = {"./targets",portStrTO, ipAddress, NULL};
 
     // INTRO
     char keyy;
     bool right_key= false;
-    char * argdes_path[] = {"konsole", "-e","./description", NULL};
+    char * argdes_path[] = {"konsole", "-e","./description", pipewr[3], NULL};
     pidDes = spawn("konsole", argdes_path);
-    usleep(500000);
+    close (pipe_fd[3][1]);
+    usleep(50000);
 
     printf("\t\t  ____________________________________\n");
     printf("\t\t |                                    |\n");
@@ -130,34 +134,69 @@ int main(int argc, char* argv[]){
     printf("\t\t\t | U: RESET THE DRONE   |\n");
     printf("\t\t\t | Q: QUIT THE GAME     |\n");
     printf("\t\t\t |______________________|\n\n\n");
-    printf("Press any key on the window to start the game\n");
 
+    if ((read(pipe_fd[3][0], &keyy, sizeof(char))) == -1){
+        perror("error in reading from pipe");
+        writeToLog(errors, "MASTER: error in reading from pipe");
+    }
+    close(pipe_fd[3][0]);
+    if (keyy == 'q'){
+        printf("The game is over\n");
+        writeToLog(debug, "MASTER: The game is over");
+        return 0;
+    }
+    else if (keyy == 'i'){
+        printf("The game is in online mode\n");
+        writeToLog(debug, "MASTER: The game is in online mode");
+    }
+    else if (keyy == 't'){
+        printf("The game is in online mode with targets and obstacles\n");
+        writeToLog(debug, "MASTER: The game is in online mode with targets and obstacles");
+    }
+    else{
+        printf("The game is in local mode\n");
+        writeToLog(debug, "MASTER: The game is in local mode");
+        right_key = true;
+    }
+
+    // waiting to close the description
     if ((waitpid(pidDes, NULL, 0)) == -1){
         perror("waitpid");
         writeToLog(errors, "MASTER: error in waitpid for description");
     }
-
-    // EXECUTING PROCESSES
-    proIds[SERVER] = spawn("./server", server_path);
-    usleep(500000);
-    proIds[DRONE] = spawn("./drone", drone_path);
-    usleep(500000);
-    proIds[INPUT] = spawn("./input", input_path);
-    usleep(500000);
-    proIds[OBSTACLES] = spawn("./obstacles", obstacles_path);
-    usleep(500000);
-    proIds[TARGETS] = spawn("./targets", targets_path);
-
-    // Executing watchdog
-    for (size_t i = 0; i < (NUMPROCESS - 1); ++i) {  // this for cycle passes  to pidString all elements of pidList
-        sprintf(pidStr[i], "%d", proIds[i]);
-    }
-    char *wd_path[] = {"./wd", pidStr[SERVER], pidStr[DRONE], pidStr[INPUT], pidStr[OBSTACLES], pidStr[TARGETS], NULL}; 
-    sleep(1);
-    proIds[WATCHDOG] = spawn("./wd", wd_path);
     
+    if (keyy == 'i' || right_key){
+        nprc = 3;
+        proIds[SERVER] = spawn("./server", server_path);
+        usleep(500000);            
+        proIds[DRONE] = spawn("./drone", drone_path);
+        usleep(500000);
+        proIds[INPUT] = spawn("./input", input_path);
+        usleep(500000);
+        for (size_t i = 0; i < (nprc); ++i) {  // this for cycle passes  to pidString all elements of pidList
+            sprintf(pidStr[i], "%d", proIds[i]);
+        }
+    }
+    if (keyy == 't' || right_key){
+        nprc = 5;
+        proIds[OBSTACLES] = spawn("./obstacles", obstacles_path);
+        usleep(500000);
+        proIds[TARGETS] = spawn("./targets", targets_path);
+        /*for (size_t i = 3; i < (nprc); ++i) {  // this for cycle passes  to pidString all elements of pidList
+            sprintf(pidStr[i], "%d", proIds[i]);
+        }*/
+        
+    }
+    if (keyy != 't'){
+        char *wd[] = {"./wd", pidStr[SERVER], pidStr[DRONE], pidStr[INPUT], NULL};
+        sleep(1);
+        writeToLog(debug, "MASTER: Watchdog for input game is running");
+        proIds[WATCHDOG] = spawn("./wd", wd);
+    }
+    
+
     // Waiting for processes to end
-    for(int i = 0; i<4; i++){   //waits for all processes to end
+    for(int i = 0; i < (nprc + 1); i++){   //waits for all processes to end
         wait(NULL); 
     }
     
