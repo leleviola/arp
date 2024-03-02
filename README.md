@@ -39,16 +39,16 @@ The package conteains also **Docs** folder where there all the documents needed 
 
 This program is composed by several different process:
 * master: the main process and the father of all the other process. It `fork()` to generate the new child process and through an `exevp()` it overwrites the child with a new computation. It sends all the id-process to the watchdog and all the needed pipes to every process.
-* [server:](https://github.com/leleviola/arp/blob/master/drone_sim/server.c) the blackboard  of the project, it manage all the information that arrives from the other processes to send them to the other procesesse that need them.
-* [sockserver:]() the child of the server genterated to implement the socket communication for more than one client (one for each client)
-* [window:](https://github.com/leleviola/arp/blob/master/drone_sim/window.c) window that show the geometrical position of the drone in the arena and the position's numeeric values.
-* [drone:](https://github.com/leleviola/arp/blob/master/drone_sim/drone.c) the computation side of the project, it takes the input, process it with the optimal exstimation of the drone position in the real world and share the data with the server.
-* [input:](https://github.com/leleviola/arp/blob/master/drone_sim/input.c)  Takes the user's char input. It is important to allows the user to give the data input
-* [obstacles:](https://github.com/leleviola/arp/blob/master/drone_sim/obstacles.c) the obstacles process.This is connect through the net. It generates, every 60 seconds, a random number of obstacles that will be inside the environment. Every obstacle generates a repulsive force everytime the drone will be near enough
-* [targets:](https://github.com/leleviola/arp/blob/master/drone_sim/targets.c) the targets process. This is connect through the net. It generates, every time the user reach all the targets, a random number of targets that will be inside the environment. Every target generates an attractive force on the drone
-* [watchdog:](https://github.com/leleviola/arp/blob/master/drone_sim/wd.c)  the process controller. Through the signal and the signal handler functions of the process it checks if all the local process are still alive. If not, it ends the program.
+* [server:](https://github.com/leleviola/arp/blob/main/drone_sim/server.c) the blackboard  of the project, it manage all the information that arrives from the other processes to send them to the other procesesse that need them.
+* [sockserver:](https://github.com/leleviola/arp/blob/main/drone_sim/sockserver.c) the child of the server genterated to implement the socket communication for more than one client (one for each client)
+* [window:](https://github.com/leleviola/arp/blob/main/drone_sim/window.c) window that show the geometrical position of the drone in the arena and the position's numeeric values.
+* [drone:](https://github.com/leleviola/arp/blob/main/drone_sim/drone.c) the computation side of the project, it takes the input, process it with the optimal exstimation of the drone position in the real world and share the data with the server.
+* [input:](https://github.com/leleviola/arp/blob/main/drone_sim/input.c)  Takes the user's char input. It is important to allows the user to give the data input
+* [obstacles:](https://github.com/leleviola/arp/blob/main/drone_sim/obstacles.c) the obstacles process.This is connect through the net. It generates, every 60 seconds, a random number of obstacles that will be inside the environment. Every obstacle generates a repulsive force everytime the drone will be near enough
+* [targets:](https://github.com/leleviola/arp/blob/main/drone_sim/targets.c) the targets process. This is connect through the net. It generates, every time the user reach all the targets, a random number of targets that will be inside the environment. Every target generates an attractive force on the drone
+* [watchdog:](https://github.com/leleviola/arp/blob/main/drone_sim/wd.c)  the process controller. Through the signal and the signal handler functions of the process it checks if all the local process are still alive. If not, it ends the program.
   
-![Project Architecture](https://github.com/leleviola/arp/blob/resources/resources/architettura2.png) !!CHANGEE!!
+![Project Architecture](https://github.com/leleviola/arp/blob/main/Docs/1709068157920.png)
   
 ## Main features
 The program starts with an introduction page to show all the commands to the user, and all the other processes initialize only when the description child of the master process has terminated through a `wait(NULL);`.  
@@ -110,7 +110,7 @@ The points of strength of this simulator are:
 * speed of response and fluidity of movement to user input
 * implementation of the socket
 * stability of the system
-* stability pf the socket
+* stability of the socket
 
 ---------------
 ## Installation  
@@ -137,6 +137,9 @@ $ cd drone_sim/
 * give the permession to the compiler and the folder cleaner
 ```bash
 $ chmod +x *.sh
+$ cd bash/
+$ chmod +x *.sh
+$ cd ..
 ```
 * On the server computer take the IP address
 ```bash
@@ -152,8 +155,6 @@ $ hostname -I
 ```bash
 $ ./compile.sh
 ```
-
-
 
 
 ## Usage
@@ -191,6 +192,6 @@ For the Konsoles implementations it is mportant to know the ncurses libraries. [
 - After the window opens return to the terminal (press it) because, if not, the program will not take into account the keyboard iput.
 - Rarely may happen that the drone escapes to the edges -> In this case it will be reset to the centre of the window
 
-**problems:** It is well known that really rarely the window can close unexpectedly. We are still working on this problem to find a solution and solve it in the next update. Unfortunately, the ncurses graphics library does not help in the development of the graphical user interface. The only solution is to re-run the programme from the terminal with: `./compile.sh`
-If the terminal no longer responds to keyboard input, please close the terminal and open a new one.
-If an error occurs 
+**problems:** When the parameters for the socket connection are incorrectly set, the program will not close, becouse it will wait the socket connection.
+To close it the only way is to interrupt the processes with ctrl+c and close the terminal window.
+Now (after the change of the connection setting) is possible to re-run the code.

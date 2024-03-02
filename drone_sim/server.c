@@ -156,8 +156,6 @@ int main(int argc, char* argv[]){
     int rows = 50;
     int cols = 100;
 
-    // child pipes
-    // Generating the pipes for the two children
     // CREATING PIPE
     /*
         pipe 0: server -> ch1 re0 al server: wr0
@@ -188,6 +186,11 @@ int main(int argc, char* argv[]){
     bool first_set_of_targets_arrived = false;
     int nobstacles_edge = 2 * (rows + cols);
     struct obstacle *edges[nobstacles_edge];
+    int pipeWdfd[2];
+    // these strings are for make the window knowing which type of data it will receive
+    char *obs = "obs";
+    char *tar = "tar";
+    char *coo = "coo";
 
     if (debug == NULL || errors == NULL){
         perror("error in opening log files");
@@ -200,10 +203,9 @@ int main(int argc, char* argv[]){
     // Window generation
     writeToLog(serdebug, "SERVER: generating the map");
     char *window_path[] = {"konsole", "-e", "./window", NULL};  // path of window process
-    char command[100];
 
     // pipe to window
-    int pipeWdfd[2];
+    
     if(pipe(pipeWdfd) == -1){
         perror("error in pipe");
         writeToLog(errors, "SERVER: error in pipe opening");
@@ -211,12 +213,9 @@ int main(int argc, char* argv[]){
     }
 
     sprintf(piperd[0], "%d", pipeWdfd[0]);
-    // sprintf(pipewr[0], "%d", pipeWdfd[1]);
     char *argw[] = {"Konsole","-e","./window", piperd[0], NULL};  // path of window process
     window_pid = spawn("konsole", argw); // spawn the child process
     close(pipeWdfd[0]);
-
-    
 
     // Drone pipe and select
     fd_set read_fds;
@@ -331,11 +330,6 @@ int main(int argc, char* argv[]){
             return 1;
         }
         writeToLog(serdebug, "SERVER: connection accepted");
-        /*if (client_sock == -1) {
-            perror("accept");
-            writeToLog(errors, "SERVER: error in accept()");
-            return 1;
-        }*/
         sprintf(fd_str, "%d", client_sock);
         char id[5];
         sprintf(id, "%d", i);
@@ -385,11 +379,6 @@ int main(int argc, char* argv[]){
         exit(EXIT_FAILURE);
     }
 
-    // these strings are for make the window knowing which type of data it will receive
-    char *obs = "obs";
-    char *tar = "tar";
-    char *coo = "coo";
-
    // SIGNALS
     
     int count = 0;
@@ -412,8 +401,6 @@ int main(int argc, char* argv[]){
         if(pipeDrfd[0] > max_fd) {
             max_fd = pipeDrfd[0];
         }
-        
-        // ciclo do while per evitare errori dovuuti a segnali
         
         do{
             sel = select(max_fd + 1, &read_fds, &write_fds, NULL, NULL);
@@ -527,7 +514,6 @@ int main(int argc, char* argv[]){
                         writeToLog(errors, "SERVER: error in writing to pipe number of obstacles");
                         exit(EXIT_FAILURE);
                     }
-                    //strcpy(data_info, "obs");
                     if ((write(pipeWdfd[1], obs, strlen(obs))) == -1){  // writes to window that it will sends obstacles
                         perror("error in writing to pipe");
                         writeToLog(errors, "SERVER: error in writing to pipe window that it will sends obstacles");

@@ -31,34 +31,6 @@ struct obstacle {
     float y;
 };
 
-/*
-void sig_handler(int signo, siginfo_t *info, void *context) {
-
-    if (signo == SIGUSR1) {
-        FILE *debug = fopen("logfiles/debug.log", "a");
-        // SIGUSR1 received
-        wd_pid = info->si_pid;
-        fprintf(debug, "%s\n", "OBSTACLES: signal SIGUSR1 received from WATCH DOG");
-        kill(wd_pid, SIGUSR1);
-        fclose(debug);
-    }
-    
-    if (signo == SIGUSR2){
-        FILE *debug = fopen("logfiles/debug.log", "a");
-        fprintf(debug, "%s\n", "OBSTACLES: terminating by WATCH DOG");
-        fclose(debug);
-        exit(EXIT_FAILURE);
-    }
-    if (signo == SIGINT){
-        //pressed q or CTRL+C
-        printf("OBSTACLE: Terminating with return value 0...");
-        FILE *debug = fopen("logfiles/debug.log", "a");
-        fprintf(debug, "%s\n", "OBSTACLE: terminating with return value 0...");
-        fclose(debug);
-        sigint_rec = true;
-    }
-    
-}*/
 
 void writeToLog(FILE * logFile, const char *message) {
     fprintf(logFile, "%s\n", message);
@@ -110,10 +82,8 @@ int main (int argc, char *argv[])
     FILE * debug = fopen("logfiles/debug.log", "a");
     FILE * errors = fopen("logfiles/errors.log", "a");
     FILE * obsdebug = fopen("logfiles/obstacles.log", "w");
-    // these var are used because there aren't pipes, but these values are imported by server
     char msg[100]; // message to write on debug file
     struct sockaddr_in server_address;
-    //struct hostent *server; put for ip address
     
     struct hostent *server;
     int port = 40000; // default port
@@ -172,28 +142,6 @@ int main (int argc, char *argv[])
     }
     writeToLog(obsdebug, "OBSTACLES: message OI sent to server");
 
-    /*struct sigaction sa; //initialize sigaction
-    sa.sa_flags = SA_SIGINFO; // Use sa_sigaction field instead of sa_handler
-    sa.sa_sigaction = sig_handler;
-
-    // Register the signal handler for SIGUSR1
-    if (sigaction(SIGUSR1, &sa, NULL) == -1) {
-        perror("sigaction");
-        writeToLog(errors, "INPUT: error in sigaction()");
-        exit(EXIT_FAILURE);
-    }
-
-    if(sigaction(SIGUSR2, &sa, NULL) == -1){
-        perror("sigaction");
-        writeToLog(errors, "INPUT: error in sigaction()");
-        exit(EXIT_FAILURE);
-    }
-
-    if (sigaction(SIGINT, &sa, NULL) == -1) {
-        perror("Error setting up SIGINT handler");
-        writeToLog(errors, "SERVER: error in sigaction()");
-        exit(EXIT_FAILURE);
-    }*/
 
     // receiving rows and cols from server
     if ((recv(sock, sockmsg, MAX_MSG_LEN, 0)) < 0) {
@@ -209,11 +157,9 @@ int main (int argc, char *argv[])
     cols = (int)c;
     printf("OBSTACLES: rows = %d, cols = %d\n", rows, cols);
     
-    sleep(1); // wait for server to read rows and cols
-    // obstacle generation cycle
+    sleep(1);
     int sel;
-    while(!stopReceived /*|| !sigint_rec*/){
-        //time_t t = time(NULL);
+    while(!stopReceived){
         srand(time(NULL));
         nobstacles = rand() % MAX_OBSTACLES;
         printf("OBSTACLES: number of obstacles = %d\n", nobstacles);
@@ -266,7 +212,6 @@ int main (int argc, char *argv[])
                 if(strcmp(buffer, stop) == 0){
                     writeToLog(obsdebug, "OBSTACLES: STOP message received from server");
                     stopReceived = true;
-                    //exit(EXIT_SUCCESS); // VEDERE MEGLIO COME FARE L'EXIT SE CON FLAG O XON LA SYS CALL
                 }
             }
         }

@@ -17,18 +17,15 @@
 
 int main (int argc, char* argv[])
 {
-    // WINDOW *external_window;
-    // WINDOW *printing_window;
-    WINDOW *arrw[NUMWINDOWS]; // change numwindows in library
+    WINDOW *arrw[NUMWINDOWS]; 
     char ch;
     int i, index = 0;
     int fdMaster;
-    // change with the new windows.c and the new functiones
     
     int nrows, ncols;
     int h,w;
   
-    initscr(); // start curses mode
+    initscr(); 
     raw();
     noecho();
     start_color();
@@ -40,16 +37,14 @@ int main (int argc, char* argv[])
     sscanf(argv[1], "%d", &fdMaster);
     
     // Windows initialization
-    //init_windows(Srow, Scol, &external_window, &printing_window,&PRy,&PRx,&Startx,&Starty,&Wcol,&Wrow);
 
     refresh();    
     init_pair(1,COLOR_GREEN,COLOR_BLACK);
     squareCreation(arrw,h,w, &nrows,&ncols);
     printw("Description of the game: \n");
-    // printw("\nThis game is a simple game of a drone control, where the user can press \nthis buttons to drive the robot to avoid the obstacles and reach the targets.\n");
-    // wrefresh(external_window);
+    
     refresh();
-    // wrefresh(printing_window);
+
 
     for (int i = 0; i < NUMWINDOWS; i++){
         switch (i)

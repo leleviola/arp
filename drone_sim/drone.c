@@ -229,7 +229,6 @@ int main(int argc, char* argv[]){
     fd_set read_fds;
     fd_set write_fds;
     FD_ZERO(&read_fds);
-    //FD_ZERO(&write_fds);
     int keyfd; //readable file descriptor for key pressed in input 
     sscanf(argv[1], "%d", &keyfd);
     char input;
@@ -257,7 +256,7 @@ int main(int argc, char* argv[]){
     sscanf(argv[3], "%d", &pipeSefd[0]);
     writeToLog(debug, "DRONE: pipes opened");
     
-// SIGNALS
+    // SIGNALS
     struct sigaction sa; //initialize sigaction
     sa.sa_flags = SA_SIGINFO; // Use sa_sigaction field instead of sa_handler
     sa.sa_sigaction = sig_handler;
@@ -380,7 +379,8 @@ int main(int argc, char* argv[]){
         FD_SET(pipeSefd[0], &read_fds);
         //FD_SET(pipeSefd[1], &write_fds);    // adds the pipe to the set of fd to write to
         int ready;
-        do {//because signal from watch dog stops system calls and read gives error, so if it gives it with errno == EINTR, it repeat the select sys call
+        do {//because signal from watch dog stops system calls and read gives error,
+        // so if it gives it with errno == EINTR, it repeat the select sys call
             int maxfd = (keyfd > pipeSefd[0]) ? keyfd : pipeSefd[0];
             ready = select(maxfd + 1, &read_fds, NULL, NULL, &timeout);
         } while (ready == -1 && errno == EINTR);
@@ -403,7 +403,6 @@ int main(int argc, char* argv[]){
                     return 1;
                 }
                 writeToLog(debug, buffer);
-            //buffer[numRead] = '\0';
                 if(strcmp(buffer, "obs") == 0){
                     writeToLog(drdebug, "DRONE: reading obstacles");
                     
@@ -414,7 +413,6 @@ int main(int argc, char* argv[]){
                     }
                     sprintf(msg,"DRONE: number of obstacles: %d\n", nobstacles);
                     writeToLog(drdebug, msg);
-                    //struct obstacle *obstacles[nobstacles];
                     for(int i=0; i<nobstacles; i++){
                         obstacles[i] = malloc(sizeof(struct obstacle));
                         if ((read(pipeSefd[0], obstacles[i], sizeof(struct obstacle))) == -1){
@@ -547,7 +545,8 @@ int main(int argc, char* argv[]){
                 }
             }
         }
-        for(int i= 0; i<2; i++){ // setting drone max input force to avoid the drone to take too much velocity
+        for(int i= 0; i<2; i++){ // setting drone max input force to avoid the drone
+        // to take too much velocity
             if(F[i]<-5){
                 F[i] = -5;
             }
@@ -573,7 +572,6 @@ int main(int argc, char* argv[]){
                 writeToLog(drdebug, "DRONE: target taken");
             }
             else
-                //target[i]->taken = false;
                 fax += calculateAttractiveForcex(x, target[i]->x);
                 fay += calculateAttractiveForcey(y, target[i]->y);
         }

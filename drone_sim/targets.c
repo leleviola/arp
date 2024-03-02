@@ -46,7 +46,6 @@ void Receive(int sockfd, char *buffer, FILE *debug) {
         exit(EXIT_FAILURE);
     }
     writeToLog(debug, buffer);
-    //char msg[MAX_MSG_LEN] = buffer;
     if(send(sockfd, buffer, strlen(buffer)+1, 0) < 0) {
         writeToLog(error, "SOCKSERVER: Error sending message to client");
         exit(EXIT_FAILURE);
@@ -90,7 +89,6 @@ int main (int argc, char *argv[])
     targets *target[MAX_TARGETS];
     int ntargets = 0;
     struct sockaddr_in server_address;
-    //struct hostent *server; put for ip address
 
     struct hostent *server;
     int port = 40000; // default port
@@ -148,30 +146,6 @@ int main (int argc, char *argv[])
     }
     writeToLog(tardebug, "TARGETS: message TI sent to server");
 
-    // SIGNALS
-    /*struct sigaction sa; //initialize sigaction
-    sa.sa_flags = SA_SIGINFO; // Use sa_sigaction field instead of sa_handler
-    sa.sa_sigaction = sig_handler;
-
-    // Register the signal handler for SIGUSR1
-    if (sigaction(SIGUSR1, &sa, NULL) == -1) {
-        perror("sigaction");
-        writeToLog(errors, "TARGETS: error in sigaction()");
-        exit(EXIT_FAILURE);
-    }
-
-    if(sigaction(SIGUSR2, &sa, NULL) == -1){
-        perror("sigaction");
-        writeToLog(errors, "INPUT: error in sigaction()");
-        exit(EXIT_FAILURE);
-    }
-
-    if (sigaction(SIGINT, &sa, NULL) == -1) {
-        perror("Error setting up SIGINT handler");
-        writeToLog(errors, "SERVER: error in sigaction()");
-        exit(EXIT_FAILURE);
-    }
-    */
     // receiving rows and cols from server
     if ((recv(sock, sockmsg, MAX_MSG_LEN, 0)) < 0) {
         writeToLog(errors, "Error receiving message from server");
@@ -186,7 +160,7 @@ int main (int argc, char *argv[])
     cols = (int)c;
     printf("TARGETS: rows = %d, cols = %d\n", rows, cols);
     sleep(2);
-    while(!stopReceived /*|| !sigint_rec*/){
+    while(!stopReceived){
         time_t t = time(NULL);
         ge_flag = false;
         srand(time(NULL)); // for change every time the seed of rand()

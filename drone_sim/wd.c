@@ -142,10 +142,6 @@ int main(int argc, char* argv[]){
             t2 = time(NULL);
         }
 
-        /* Here we decided to identificate wich process stopped working using 3 different if in order to make, 
-        in the 2nd assignment, the watch dog to close and reopen only the process that stopped working, then if after a certain 
-        number of times it doesn't respond, we will terminate it. In firt assignment we only make it terminate the whole program.*/
-
         if(server_check==FALSE) //checks if server responded
         {
             writeToLog(debug, "WATCH DOG: SERVER is not responding, terminating the program...");
@@ -167,7 +163,7 @@ int main(int argc, char* argv[]){
             printf("WATCH DOG: SERVER received signal\n");
         
 
-        if(drone_check==FALSE) //checks if server responded
+        if(drone_check==FALSE) //checks if drone responded
         {
             writeToLog(debug, "WATCH DOG: DRONE is not responding, terminating the program...");
             if (kill(server_pid, SIGUSR2) == -1) {  // send SIGUSR1 to server
@@ -187,7 +183,7 @@ int main(int argc, char* argv[]){
         else
             printf("WATCH DOG: DRONE received signal\n");
         
-        if(input_check==FALSE) //checks if server responded
+        if(input_check==FALSE) //checks if input responded
         {
             writeToLog(debug, "WATCH DOG: INPUT is not responding, terminating the program...");
             if (kill(server_pid, SIGUSR2) == -1) {  // send SIGUSR1 to server
@@ -206,7 +202,6 @@ int main(int argc, char* argv[]){
         }
         else
             printf("WATCH DOG: INPUT received signal\n");
-        // sends a signal to all processes to check they are alive
     }
     fclose(debug);
     fclose(errors);
