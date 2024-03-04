@@ -44,6 +44,7 @@ void Send(int sock, char *msg, FILE *obsdebug){
         writeToLog(error, "TARGETS: error in sending message to server");
         exit(EXIT_FAILURE);
     }
+    writeToLog(obsdebug, msg);
     char recvmsg[MAX_MSG_LEN];
     if (recv(sock, recvmsg, MAX_MSG_LEN, 0) < 0) {
         perror("recv");
@@ -107,6 +108,8 @@ int main (int argc, char *argv[])
     writeToLog(debug, "OBSTACLES: process started");
     
     sscanf(argv[1], "%d", &port);
+    sprintf(msg, "OBSTACLES: port = %d", port);
+    writeToLog(obsdebug,msg);
 
     sock = socket(AF_INET, SOCK_STREAM, 0);
     if (sock == -1) {
@@ -135,21 +138,9 @@ int main (int argc, char *argv[])
     writeToLog(debug, "OBSTACLES: connected to serverSocket");
     memset(sockmsg, '\0', MAX_MSG_LEN);
     
-    writeToLog(obsdebug, message);
-    if (send(sock, message, strlen(message) + 1, 0) == -1) {
-        perror("send");
-        return 1;
-    }
-    writeToLog(obsdebug, "OBSTACLES: message OI sent to server");
-
-
+    Send(sock, message, obsdebug);
     // receiving rows and cols from server
-    if ((recv(sock, sockmsg, MAX_MSG_LEN, 0)) < 0) {
-        writeToLog(errors, "Error receiving message from server");
-        exit(EXIT_FAILURE);
-    }
-    writeToLog(obsdebug, "OBSTACLES: message received from server");
-    writeToLog(obsdebug, sockmsg);
+    Receive(sock, sockmsg, obsdebug);
     // setting rows and cols
     char *format = "%f,%f";
     sscanf(sockmsg, format, &r, &c);

@@ -58,6 +58,7 @@ void Send(int sock, char *msg, FILE *debug){
         writeToLog(error, "SOCKSERVER: error in sending message to server");
         exit(EXIT_FAILURE);
     }
+    writeToLog(debug, msg);
     char recvmsg[MAX_MSG_LEN];
     if (recv(sock, recvmsg, MAX_MSG_LEN, 0) < 0) {
         perror("recv");
@@ -99,29 +100,14 @@ int main (int argc, char *argv[]) {
     sscanf(argv[3], "%d", &pipeSe[1]);
     writeToLog(sockdebug, "Socket server pipe created");
 
-    memset(msg, '\0', MAX_MSG_LEN);
-    if ((recv(sockfd, msg, MAX_MSG_LEN, 0)) < 0) {
-        writeToLog(errors, "Error receiving message from client");
-        exit(EXIT_FAILURE);
-    }
-    writeToLog(sockdebug, "Message received from client");
-    writeToLog(sockdebug, msg);
     
     fd_set readfds;
     FD_ZERO(&readfds);
-    if ((write(pipeSe[1], msg, strlen (msg) + 1)) < 0) {
-        writeToLog(errors, "Error writing to pipe the message information");
-        exit(EXIT_FAILURE);
-    }
-    writeToLog(sockdebug, "Message sent to parent process");
-    writeToLog(sockdebug, msg);
+    memset(msg, '\0', MAX_MSG_LEN);
+    Receive(sockfd, msg, &pipeSe[1], sockdebug);
+    
+    Send(sockfd, argv[5], sockdebug);
 
-    // Sending rows and cols to the clients
-    if ((send(sockfd, argv[5], strlen(argv[5]) + 1, 0)) < 0) {
-        perror("Error sending rows and cols to client");
-        writeToLog(sockdebug, "SOCKSERVER: Error sending rows and cols to client");
-        exit(EXIT_FAILURE);
-    }
     while (!stopReceived) {
 
         FD_SET(pipeSe[0], &readfds);
@@ -151,7 +137,7 @@ int main (int argc, char *argv[]) {
                     perror("Error reading from pipe");
                     exit(EXIT_FAILURE);
                 }
-                writeToLog(sockdebug, "SOCKSERVER: Message received from server");
+                //writeToLog(sockdebug, "SOCKSERVER: Message received from server");
                 writeToLog(sockdebug, msg);
                 Send(sockfd, msg, sockdebug);
                 writeToLog(sockdebug, "SOCKSERVER: Message sent to client");
@@ -160,7 +146,6 @@ int main (int argc, char *argv[]) {
         else {
             writeToLog(sockdebug, "SOCKSERVER: Timeout expired");
         }
-        // IMPLEMENTA LA SELECT PER LA LETTURA DELLA PIPE con timeout
         if (strcmp(msg, stop) == 0) {
             stopReceived = true;
         }

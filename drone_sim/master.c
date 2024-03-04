@@ -64,8 +64,8 @@ int main(int argc, char* argv[]){
     char piperd[NUMPIPE][10];    // string that contains the readable fd of pipe_fd
     char pipewr[NUMPIPE][10];
     int pipe_fd[NUMPIPE][2]; 
-    int portSe = 40000;
-    int portTO = 40000;
+    int portSe = 60000;
+    int portTO = 60000;
     char portStrSe[10];
     char portStrTO[10];
     char ipAddress[20] = "IP ADDRESS NOT SET YET";

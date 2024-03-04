@@ -91,7 +91,7 @@ int main (int argc, char *argv[])
     struct sockaddr_in server_address;
 
     struct hostent *server;
-    int port = 40000; // default port
+    int port = 40000; // default port 
     int sock;
     char sockmsg[MAX_MSG_LEN];
     float r,c;
@@ -111,6 +111,8 @@ int main (int argc, char *argv[])
     printf("TARGETS: process started\n");
 
     sscanf(argv[1], "%d", &port);
+    sprintf(msg, "TARGETS: port = %d", port);
+    writeToLog(tardebug, msg);
 
     sock = socket(AF_INET, SOCK_STREAM, 0);
     if (sock == -1) {
@@ -140,19 +142,9 @@ int main (int argc, char *argv[])
 
     
     writeToLog(tardebug, message);
-    if (send(sock, message, strlen(message) + 1, 0) == -1) {
-        perror("send");
-        return 1;
-    }
-    writeToLog(tardebug, "TARGETS: message TI sent to server");
-
+    Send(sock, message, tardebug);
     // receiving rows and cols from server
-    if ((recv(sock, sockmsg, MAX_MSG_LEN, 0)) < 0) {
-        writeToLog(errors, "Error receiving message from server");
-        exit(EXIT_FAILURE);
-    }
-    writeToLog(tardebug, "TARGETS: message received from server");
-    writeToLog(tardebug, sockmsg);
+    Receive(sock, sockmsg, tardebug);
     // setting rows and cols
     char *format = "%f,%f";
     sscanf(sockmsg, format, &r, &c);
