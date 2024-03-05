@@ -392,11 +392,11 @@ int main(int argc, char* argv[]){
         FD_SET(*pipeTafd[0], &read_fds); // include pipeTafd[0] in read_fds
         // searching for the max fd to use in select
         int max_fd = -1;
-        if (*pipeTafd[0] > max_fd) {
-            max_fd = *pipeTafd[0];
-        }
         if(*pipeObfd[0] > max_fd) {
             max_fd = *pipeObfd[0];
+        }
+        if (*pipeTafd[0] > max_fd) {
+            max_fd = *pipeTafd[0];
         }
         if(pipeDrfd[0] > max_fd) {
             max_fd = pipeDrfd[0];
@@ -412,7 +412,9 @@ int main(int argc, char* argv[]){
             exit(EXIT_FAILURE);
         }
         else if(sel>0){
+
             if(FD_ISSET(*pipeTafd[0], &read_fds)){
+                writeToLog(serdebug, "SERVER: reading from pipe targets of socket server");
                 targettaken = 0;
                 first_set_of_targets_arrived = true;
                 memset(sockmsg, '\0', MAX_MSG_LEN);

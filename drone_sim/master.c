@@ -65,10 +65,10 @@ int main(int argc, char* argv[]){
     char pipewr[NUMPIPE][10];
     int pipe_fd[NUMPIPE][2]; 
     int portSe = 60000;
-    int portTO = 60000;
+    int portTO = 50000;
     char portStrSe[10];
     char portStrTO[10];
-    char ipAddress[20] = "IP ADDRESS NOT SET YET";
+    char ipAddress[20] = "192.168.1.9";
     int nprc = 0;
 
     // CREATING PIPE

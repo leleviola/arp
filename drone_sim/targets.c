@@ -93,7 +93,7 @@ int main (int argc, char *argv[])
     struct hostent *server;
     int port = 40000; // default port 
     int sock;
-    char sockmsg[MAX_MSG_LEN];
+    char sockmsgt[MAX_MSG_LEN];
     float r,c;
     int rows = 0, cols = 0;
     char stop[] = "STOP";
@@ -144,10 +144,11 @@ int main (int argc, char *argv[])
     writeToLog(tardebug, message);
     Send(sock, message, tardebug);
     // receiving rows and cols from server
-    Receive(sock, sockmsg, tardebug);
+    memset(sockmsgt, '\0', MAX_MSG_LEN);
+    Receive(sock, sockmsgt, tardebug);
     // setting rows and cols
     char *format = "%f,%f";
-    sscanf(sockmsg, format, &r, &c);
+    sscanf(sockmsgt, format, &r, &c);
     rows = (int)r;
     cols = (int)c;
     printf("TARGETS: rows = %d, cols = %d\n", rows, cols);

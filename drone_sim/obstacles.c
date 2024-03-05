@@ -89,7 +89,7 @@ int main (int argc, char *argv[])
     struct hostent *server;
     int port = 40000; // default port
     int sock;
-    char sockmsg[MAX_MSG_LEN];
+    char sockmsgo[MAX_MSG_LEN];
     float r,c;
     int rows = 0, cols = 0;
     char stop[] = "STOP";
@@ -136,14 +136,14 @@ int main (int argc, char *argv[])
         return 1;
     }
     writeToLog(debug, "OBSTACLES: connected to serverSocket");
-    memset(sockmsg, '\0', MAX_MSG_LEN);
+    memset(sockmsgo, '\0', MAX_MSG_LEN);
     
     Send(sock, message, obsdebug);
     // receiving rows and cols from server
-    Receive(sock, sockmsg, obsdebug);
+    Receive(sock, sockmsgo, obsdebug);
     // setting rows and cols
     char *format = "%f,%f";
-    sscanf(sockmsg, format, &r, &c);
+    sscanf(sockmsgo, format, &r, &c);
     rows = (int)r;
     cols = (int)c;
     printf("OBSTACLES: rows = %d, cols = %d\n", rows, cols);

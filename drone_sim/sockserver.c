@@ -35,7 +35,6 @@ void Receive(int sockfd, char *buffer, int *pipetowritefd, FILE *sckfile) {
         exit(EXIT_FAILURE);
     }
     writeToLog(sckfile, buffer);
-    //char msg[MAX_MSG_LEN] = buffer;
 
     if(write(*pipetowritefd, buffer, strlen(buffer)+1) < 0) {
         writeToLog(error, "SOCKSERVER: Error writing to pipe the message information");
