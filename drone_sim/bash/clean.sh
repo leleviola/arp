@@ -5,6 +5,6 @@ cd library/
 rm -f win.o 
 cd ..
 cd logfiles/
-rm -f debug.log drone.log errors.log obstacles.log server.log socketServer0.log socketServer1.log targets.log window.log
+rm -f debug.log drone.log obstacles.log server.log socketServer0.log socketServer1.log targets.log window.log
 cd ..
 
